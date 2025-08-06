@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Gestão de Vendas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <% if (user) { %>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">
+                            <i class="fas fa-chart-line text-blue-600 mr-2"></i>
+                            Gestão de Vendas
+                        </h1>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="/dashboard" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="/sales/history" class="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                            Histórico
+                        </a>
+                        <a href="/top-sellers" class="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                            Top Vendedores
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-700">Olá, <%= user.name %></span>
+                    <form action="/auth/logout" method="POST" class="inline">
+                        <button type="submit" class="text-gray-500 hover:text-red-600 text-sm">
+                            <i class="fas fa-sign-out-alt mr-1"></i>
+                            Sair
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <% } %>
+
+    <!-- Main Content -->
+    <main class="<%= user ? 'py-6' : 'py-12' %>">
+        <%- body %>
+    </main>
+</body>
+</html>

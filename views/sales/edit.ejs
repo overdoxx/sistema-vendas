@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Gestão de Vendas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 min-h-screen">
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="toggleMobileMenu()"></div>
+
+    <!-- Mobile Menu Sidebar -->
+    <div id="mobile-menu" class="fixed inset-y-0 left-0 w-64 bg-dark-800 border-r border-dark-700 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <div class="flex items-center justify-between p-4 border-b border-dark-700">
+            <h1 class="text-xl font-bold text-white flex items-center">
+                <div class="h-8 w-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-chart-line text-sm text-white"></i>
+                </div>
+                Gestão de Vendas
+            </h1>
+            <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white focus:outline-none">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            <a href="/dashboard" class="text-gray-400 hover:text-white hover:bg-dark-700 block px-3 py-2 rounded-md text-base font-medium transition-colors">
+                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+            </a>
+            <a href="/sales/history" class="text-gray-400 hover:text-white hover:bg-dark-700 block px-3 py-2 rounded-md text-base font-medium transition-colors border-b-2 border-blue-500">
+                <i class="fas fa-history mr-2"></i>Histórico
+            </a>
+            <div class="border-t border-dark-700 pt-4 pb-3">
+                <div class="flex items-center px-3 mb-3">
+                    <div class="h-8 w-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-sm text-white"></i>
+                    </div>
+                    <span class="ml-3 text-sm text-gray-300">Olá, <span class="text-white font-medium"><%= user.name %></span></span>
+                </div>
+                <form action="/auth/logout" method="POST" class="px-3">
+                    <button type="submit" class="text-gray-400 hover:text-red-400 text-sm transition-colors">
+                        <i class="fas fa-sign-out-alt mr-1"></i>
+                        Sair
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-dark-800/80 backdrop-blur-sm shadow-xl border-b border-dark-700 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-white flex items-center">
+                            <div class="h-8 w-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-chart-line text-sm text-white"></i>
+                            </div>
+                            Gestão de Vendas
+                        </h1>
+                    </div>
+                    <div class="hidden md:ml-8 md:flex md:space-x-8">
+                        <a href="/dashboard" class="text-gray-400 hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                        </a>
+                        <a href="/sales/history" class="text-gray-400 hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors border-b-2 border-blue-500">
+                            <i class="fas fa-history mr-2"></i>Histórico
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white focus:outline-none focus:text-white">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="h-8 w-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-sm text-white"></i>
+                        </div>
+                        <span class="text-sm text-gray-300">Olá, <span class="text-white font-medium"><%= user.name %></span></span>
+                    </div>
+                    <form action="/auth/logout" method="POST" class="inline">
+                        <button type="submit" class="text-gray-400 hover:text-red-400 text-sm transition-colors">
+                            <i class="fas fa-sign-out-alt mr-1"></i>
+                            Sair
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="py-6">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-white mb-2">Editar Venda</h1>
+                <p class="text-gray-400">
+                    <i class="fas fa-edit mr-2"></i>
+                    Altere os detalhes da venda selecionada.
+                </p>
+            </div>
+
+            <div class="bg-dark-800 rounded-xl shadow-xl p-6 border border-dark-700">
+                <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                    <div class="bg-yellow-600 rounded-lg p-2 mr-3">
+                        <i class="fas fa-pen text-white"></i>
+                    </div>
+                    Detalhes da Venda
+                </h3>
+                <form id="editSaleForm" class="space-y-4">
+                    <div>
+                        <label for="saleType" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-tag mr-2"></i>Tipo de Venda
+                        </label>
+                        <select id="saleType" name="type" class="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all">
+                            <option value="individual" <%= sale.type === 'individual' ? 'selected' : '' %>>Venda Individual</option>
+                            <option value="daily_summary" <%= sale.type === 'daily_summary' ? 'selected' : '' %>>Venda Diária Total</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="amount" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-dollar-sign mr-2"></i>Valor da Venda (R$)
+                        </label>
+                        <input type="number" 
+                               id="amount" 
+                               name="amount" 
+                               step="0.01" 
+                               min="0.01" 
+                               required
+                               value="<%= sale.amount %>"
+                               class="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                               placeholder="0,00">
+                    </div>
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-calendar mr-2"></i>Data da Venda
+                        </label>
+                        <input type="date" 
+                               id="date" 
+                               name="date" 
+                               required
+                               value="<%= saleDate %>"
+                               class="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all">
+                    </div>
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fas fa-comment mr-2"></i>Descrição (opcional)
+                        </label>
+                        <input type="text" 
+                               id="description" 
+                               name="description" 
+                               value="<%= sale.description || '' %>"
+                               class="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                               placeholder="Descrição da venda...">
+                    </div>
+                    <div id="message" class="mt-4 hidden"></div>
+                    <div class="flex justify-end space-x-4 mt-6">
+                        <a href="/sales/history" class="flex-1 md:flex-none flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-times mr-2"></i>Cancelar
+                        </a>
+                        <button type="submit" 
+                                class="flex-1 md:flex-none flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-white bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-save mr-2"></i>
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    function toggleMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('mobile-menu-overlay');
+        mobileMenu.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+    }
+
+    // Formulário de edição de venda
+    document.getElementById('editSaleForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const amount = document.getElementById('amount').value;
+        const date = document.getElementById('date').value;
+        const description = document.getElementById('description').value;
+        const type = document.getElementById('saleType').value;
+        const messageDiv = document.getElementById('message');
+        const saleId = '<%= sale._id %>'; // Obtém o ID da venda do EJS
+
+        try {
+            const response = await fetch(`/sales/edit/${saleId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    amount: parseFloat(amount),
+                    date: date,
+                    description: description,
+                    type: type
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                messageDiv.className = 'mt-4 p-4 bg-green-900/50 border border-green-500 text-green-300 rounded-lg';
+                messageDiv.innerHTML = '<i class="fas fa-check-circle mr-2"></i>' + data.message;
+                messageDiv.classList.remove('hidden');
+                
+                // Redirecionar para o histórico após 2 segundos
+                setTimeout(() => {
+                    window.location.href = '/sales/history'; // Ainda redireciona para o histórico
+                }, 2000);
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            messageDiv.className = 'mt-4 p-4 bg-red-900/50 border border-red-500 text-red-300 rounded-lg';
+            messageDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Erro ao atualizar venda: ' + error.message;
+            messageDiv.classList.remove('hidden');
+        }
+    });
+    </script>
+</body>
+</html>

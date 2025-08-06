@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - Gestão de Vendas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+      tailwind.config = {
+          darkMode: 'class',
+          theme: {
+              extend: {
+                  colors: {
+                      dark: {
+                          50: '#f8fafc',
+                          100: '#f1f5f9',
+                          200: '#e2e8f0',
+                          300: '#cbd5e1',
+                          400: '#94a3b8',
+                          500: '#64748b',
+                          600: '#475569',
+                          700: '#334155',
+                          800: '#1e293b',
+                          900: '#0f172a',
+                      }
+                  }
+              }
+          }
+      }
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 min-h-screen">
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="toggleMobileMenu()"></div>
+
+  <!-- Mobile Menu Sidebar -->
+  <div id="mobile-menu" class="fixed inset-y-0 left-0 w-64 bg-dark-800 border-r border-dark-700 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+      <div class="flex items-center justify-between p-4 border-b border-dark-700">
+          <h1 class="text-xl font-bold text-white flex items-center">
+              <div class="h-8 w-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-chart-line text-sm text-white"></i>
+              </div>
+              Gestão de Vendas
+          </h1>
+          <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white focus:outline-none">
+              <i class="fas fa-times text-xl"></i>
+          </button>
+      </div>
+      <div class="px-2 pt-2 pb-3 space-y-1">
+          <a href="/dashboard" class="text-gray-400 hover:text-white hover:bg-dark-700 block px-3 py-2 rounded-md text-base font-medium transition-colors">
+              <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+          </a>
+          <a href="/sales/history" class="text-white bg-dark-700 block px-3 py-2 rounded-md text-base font-medium">
+              <i class="fas fa-history mr-2"></i>Histórico
+          </a>
+          <div class="border-t border-dark-700 pt-4 pb-3">
+              <div class="flex items-center px-3 mb-3">
+                  <div class="h-8 w-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                      <i class="fas fa-user text-sm text-white"></i>
+                  </div>
+                  <span class="ml-3 text-sm text-gray-300">Olá, <span class="text-white font-medium"><%= user.name %></span></span>
+              </div>
+              <form action="/auth/logout" method="POST" class="px-3">
+                  <button type="submit" class="text-gray-400 hover:text-red-400 text-sm transition-colors">
+                      <i class="fas fa-sign-out-alt mr-1"></i>
+                      Sair
+                  </button>
+              </form>
+          </div>
+      </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="bg-dark-800/80 backdrop-blur-sm shadow-xl border-b border-dark-700 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+              <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                      <h1 class="text-xl font-bold text-white flex items-center">
+                          <div class="h-8 w-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                              <i class="fas fa-chart-line text-sm text-white"></i>
+                          </div>
+                          Gestão de Vendas
+                      </h1>
+                  </div>
+                  <div class="hidden md:ml-8 md:flex md:space-x-8">
+                      <a href="/dashboard" class="text-gray-400 hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors">
+                          <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                      </a>
+                      <a href="/sales/history" class="text-white hover:text-blue-400 px-3 py-2 text-sm font-medium transition-colors border-b-2 border-blue-500">
+                          <i class="fas fa-history mr-2"></i>Histórico
+                      </a>
+                  </div>
+              </div>
+              
+              <!-- Mobile menu button -->
+              <div class="md:hidden flex items-center">
+                  <button id="mobile-menu-button" onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white focus:outline-none focus:text-white">
+                      <i class="fas fa-bars text-xl"></i>
+                  </button>
+              </div>
+
+              <div class="hidden md:flex items-center space-x-4">
+                  <div class="flex items-center space-x-3">
+                      <div class="h-8 w-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                          <i class="fas fa-user text-sm text-white"></i>
+                      </div>
+                      <span class="text-sm text-gray-300">Olá, <span class="text-white font-medium"><%= user.name %></span></span>
+                  </div>
+                  <form action="/auth/logout" method="POST" class="inline">
+                      <button type="submit" class="text-gray-400 hover:text-red-400 text-sm transition-colors">
+                          <i class="fas fa-sign-out-alt mr-1"></i>
+                          Sair
+                      </button>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="py-6">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <!-- Header -->
+          <div class="mb-8">
+              <h1 class="text-3xl font-bold text-white mb-2">Histórico de Vendas</h1>
+              <p class="text-gray-400">
+                  <i class="fas fa-search mr-2"></i>
+                  Visualize e filtre suas vendas por período.
+              </p>
+          </div>
+
+          <!-- Filtros -->
+          <div class="bg-dark-800 rounded-xl shadow-xl p-6 mb-8 border border-dark-700">
+              <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+                  <div class="bg-blue-600 rounded-lg p-2 mr-3">
+                      <i class="fas fa-filter text-white"></i>
+                  </div>
+                  Filtros de Pesquisa
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                      <label for="startDateFilter" class="block text-sm font-medium text-gray-300 mb-2">
+                          <i class="fas fa-calendar-day mr-2"></i>Data Inicial
+                      </label>
+                      <input type="date" 
+                             id="startDateFilter" 
+                             value=""
+                             class="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                  </div>
+                  <div>
+                      <label for="endDateFilter" class="block text-sm font-medium text-gray-300 mb-2">
+                          <i class="fas fa-calendar-day mr-2"></i>Data Final
+                      </label>
+                      <input type="date" 
+                             id="endDateFilter" 
+                             value=""
+                             class="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                  </div>
+                  <div class="flex items-end space-x-2">
+                      <button onclick="applyDateRangeFilter()" 
+                              class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all transform hover:scale-105">
+                          <i class="fas fa-search mr-2"></i>
+                          Filtrar
+                      </button>
+                      <button onclick="clearFilters()" 
+                         class="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-4 py-3 rounded-lg hover:from-gray-700 hover:to-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all transform hover:scale-105">
+                          <i class="fas fa-times"></i>
+                      </button>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Resumo das Vendas -->
+          <div id="salesSummary" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <!-- Resumo será preenchido via JS -->
+              <div class="bg-gradient-to-br from-green-600 to-green-700 rounded-xl shadow-xl p-6 text-white flex items-center justify-center min-h-[120px]">
+                <i class="fas fa-spinner fa-spin text-3xl"></i>
+              </div>
+              <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-xl p-6 text-white flex items-center justify-center min-h-[120px]">
+                <i class="fas fa-spinner fa-spin text-3xl"></i>
+              </div>
+              <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl shadow-xl p-6 text-white flex items-center justify-center min-h-[120px]">
+                <i class="fas fa-spinner fa-spin text-3xl"></i>
+              </div>
+          </div>
+
+          <!-- Tabela Desktop -->
+          <div class="hidden md:block bg-dark-800 rounded-xl shadow-xl overflow-hidden border border-dark-700">
+              <div class="px-6 py-4 border-b border-dark-700">
+                  <h3 class="text-lg font-semibold text-white flex items-center">
+                      <i class="fas fa-table mr-2"></i>
+                      Lista de Vendas
+                  </h3>
+              </div>
+              <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-dark-700">
+                      <thead class="bg-dark-700">
+                          <tr>
+                              <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                  <i class="fas fa-calendar mr-2"></i>Data
+                              </th>
+                              <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                  <i class="fas fa-tag mr-2"></i>Tipo
+                              </th>
+                              <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                  <i class="fas fa-dollar-sign mr-2"></i>Valor da Venda
+                              </th>
+                              <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                  <i class="fas fa-percentage mr-2"></i>Comissão
+                              </th>
+                              <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                  <i class="fas fa-clock mr-2"></i>Hora
+                              </th>
+                              <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                  <i class="fas fa-comment mr-2"></i>Descrição
+                              </th>
+                              <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                  Ações
+                              </th>
+                          </tr>
+                      </thead>
+                      <tbody id="salesTableBody" class="bg-dark-800 divide-y divide-dark-700">
+                          <!-- Vendas serão preenchidas via JS -->
+                          <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-gray-400">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-spinner fa-spin text-6xl text-gray-600 mb-4"></i>
+                                    <p class="text-lg font-medium">Carregando vendas...</p>
+                                </div>
+                            </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+
+          <!-- Cards Mobile -->
+          <div id="salesMobileCards" class="md:hidden space-y-4">
+              <!-- Vendas serão preenchidas via JS -->
+              <div class="bg-dark-800 rounded-xl shadow-xl p-8 text-center border border-dark-700">
+                <i class="fas fa-spinner fa-spin text-6xl text-gray-600 mb-4"></i>
+                <p class="text-lg font-medium text-white mb-2">Carregando vendas...</p>
+              </div>
+          </div>
+      </div>
+  </main>
+
+  <script>
+  function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      mobileMenu.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+  }
+
+  // Função para formatar moeda (replicada do backend para uso no frontend)
+  function formatCurrency(amount) {
+      return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+      }).format(amount);
+  }
+
+  // Função para carregar e renderizar as vendas
+  async function loadSales(startDate = null, endDate = null) {
+      const salesTableBody = document.getElementById('salesTableBody');
+      const salesMobileCards = document.getElementById('salesMobileCards');
+      const salesSummary = document.getElementById('salesSummary');
+
+      // Mostrar spinners enquanto carrega
+      salesTableBody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-gray-400"><div class="flex flex-col items-center"><i class="fas fa-spinner fa-spin text-6xl text-gray-600 mb-4"></i><p class="text-lg font-medium">Carregando vendas...</p></div></td></tr>`;
+      salesMobileCards.innerHTML = `<div class="bg-dark-800 rounded-xl shadow-xl p-8 text-center border border-dark-700"><i class="fas fa-spinner fa-spin text-6xl text-gray-600 mb-4"></i><p class="text-lg font-medium text-white mb-2">Carregando vendas...</p></div>`;
+      salesSummary.innerHTML = `
+        <div class="bg-gradient-to-br from-green-600 to-green-700 rounded-xl shadow-xl p-6 text-white flex items-center justify-center min-h-[120px]">
+            <i class="fas fa-spinner fa-spin text-3xl"></i>
+        </div>
+        <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-xl p-6 text-white flex items-center justify-center min-h-[120px]">
+            <i class="fas fa-spinner fa-spin text-3xl"></i>
+        </div>
+        <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl shadow-xl p-6 text-white flex items-center justify-center min-h-[120px]">
+            <i class="fas fa-spinner fa-spin text-3xl"></i>
+        </div>
+      `;
+
+      try {
+          let url = '/sales/history?fetchJson=true';
+          if (startDate) url += `&startDate=${startDate}`;
+          if (endDate) url += `&endDate=${endDate}`;
+
+          const response = await fetch(url);
+          if (!response.ok) {
+              throw new Error('Erro ao carregar histórico de vendas.');
+          }
+          const data = await response.json();
+          const sales = data.sales;
+
+          // Atualizar Resumo das Vendas
+          if (sales.length > 0) {
+            salesSummary.innerHTML = `
+                <div class="bg-gradient-to-br from-green-600 to-green-700 rounded-xl shadow-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm font-medium">Total em Vendas</p>
+                            <p class="text-2xl font-bold">
+                                ${formatCurrency(data.totalAmount)}
+                            </p>
+                        </div>
+                        <div class="bg-green-500/30 rounded-full p-3">
+                            <i class="fas fa-dollar-sign text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm font-medium">Total em Comissões</p>
+                            <p class="text-2xl font-bold">
+                                ${formatCurrency(data.totalCommission)}
+                            </p>
+                        </div>
+                        <div class="bg-blue-500/30 rounded-full p-3">
+                            <i class="fas fa-percentage text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl shadow-xl p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm font-medium">Número de Vendas</p>
+                            <p class="text-2xl font-bold">${data.totalCount}</p>
+                        </div>
+                        <div class="bg-purple-500/30 rounded-full p-3">
+                            <i class="fas fa-chart-bar text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+          } else {
+            salesSummary.innerHTML = ''; // Remover resumo se não houver vendas
+          }
+
+
+          // Preencher Tabela Desktop
+          if (sales.length === 0) {
+              salesTableBody.innerHTML = `
+                  <tr>
+                      <td colspan="7" class="px-6 py-12 text-center text-gray-400">
+                          <div class="flex flex-col items-center">
+                              <i class="fas fa-inbox text-6xl text-gray-600 mb-4"></i>
+                              <p class="text-lg font-medium">Nenhuma venda encontrada</p>
+                              <p class="text-sm">Tente ajustar os filtros ou adicionar novas vendas</p>
+                          </div>
+                      </td>
+                  </tr>
+              `;
+          } else {
+              salesTableBody.innerHTML = sales.map(sale => `
+                  <tr class="hover:bg-dark-700 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                          ${sale.dateFormatted}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                          <span class="px-2 py-1 rounded-full text-xs font-medium ${sale.typeClass}">
+                              ${sale.typeDisplay}
+                          </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-400">
+                          ${sale.amountFormatted}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-400">
+                          ${sale.commissionFormatted}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                          ${sale.createdAtTimeFormatted}
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-300">
+                          ${sale.description || '-'}
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <a href="/sales/edit/${sale._id}" class="text-yellow-500 hover:text-yellow-400 mr-3 transition-colors">
+                              <i class="fas fa-edit"></i> Editar
+                          </a>
+                          <button onclick="deleteSale('${sale._id}')" class="text-red-500 hover:text-red-400 transition-colors">
+                              <i class="fas fa-trash-alt"></i> Excluir
+                          </button>
+                      </td>
+                  </tr>
+              `).join('');
+          }
+
+          // Preencher Cards Mobile
+          if (sales.length === 0) {
+              salesMobileCards.innerHTML = `
+                  <div class="bg-dark-800 rounded-xl shadow-xl p-8 text-center border border-dark-700">
+                      <i class="fas fa-inbox text-6xl text-gray-600 mb-4"></i>
+                      <p class="text-lg font-medium text-white mb-2">Nenhuma venda encontrada</p>
+                      <p class="text-sm text-gray-400">Tente ajustar os filtros ou adicionar novas vendas</p>
+                  </div>
+              `;
+          } else {
+              salesMobileCards.innerHTML = sales.map(sale => `
+                  <div class="bg-dark-800 rounded-xl shadow-xl p-6 border border-dark-700 transform hover:scale-105 transition-all">
+                      <div class="flex justify-between items-start mb-4">
+                          <div>
+                              <p class="text-lg font-semibold text-white flex items-center">
+                                  <i class="fas fa-calendar-day mr-2 text-blue-400"></i>
+                                  ${sale.dateFormatted}
+                              </p>
+                              <p class="text-sm text-gray-400 flex items-center mt-1">
+                                  <i class="fas fa-clock mr-2"></i>
+                                  ${sale.createdAtTimeFormatted}
+                              </p>
+                              <p class="mt-2">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium ${sale.typeClass}">
+                                        ${sale.typeDisplay}
+                                    </span>
+                              </p>
+                          </div>
+                          <div class="text-right">
+                              <p class="text-2xl font-bold text-green-400">
+                                  ${sale.amountFormatted}
+                              </p>
+                              <p class="text-sm text-blue-400">
+                                  Comissão: ${sale.commissionFormatted}
+                              </p>
+                          </div>
+                      </div>
+                      ${sale.description ? `
+                      <div class="border-t border-dark-700 pt-3">
+                          <p class="text-sm text-gray-300 flex items-center">
+                              <i class="fas fa-comment mr-2 text-purple-400"></i>
+                              ${sale.description}
+                          </p>
+                      </div>
+                      ` : ''}
+                      <div class="flex justify-end mt-4 space-x-3">
+                          <a href="/sales/edit/${sale._id}" class="text-yellow-500 hover:text-yellow-400 transition-colors">
+                              <i class="fas fa-edit"></i> Editar
+                          </a>
+                          <button onclick="deleteSale('${sale._id}')" class="text-red-500 hover:text-red-400 transition-colors">
+                              <i class="fas fa-trash-alt"></i> Excluir
+                          </button>
+                      </div>
+                  </div>
+              `).join('');
+          }
+
+          // Atualizar os valores dos filtros com os valores retornados pela API (padrão ou filtrado)
+          document.getElementById('startDateFilter').value = data.selectedStartDate;
+          document.getElementById('endDateFilter').value = data.selectedEndDate;
+
+      } catch (error) {
+          console.error('Erro ao carregar vendas:', error);
+          salesTableBody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-red-400">Erro ao carregar vendas. Tente novamente.</td></tr>`;
+          salesMobileCards.innerHTML = `<div class="bg-dark-800 rounded-xl shadow-xl p-8 text-center border border-dark-700"><p class="text-red-400">Erro ao carregar vendas. Tente novamente.</p></div>`;
+          salesSummary.innerHTML = '';
+      }
+  }
+
+  function applyDateRangeFilter() {
+      const startDate = document.getElementById('startDateFilter').value;
+      const endDate = document.getElementById('endDateFilter').value;
+      if (startDate && endDate) {
+          loadSales(startDate, endDate);
+      } else {
+          alert('Por favor, selecione tanto a Data Inicial quanto a Data Final.');
+      }
+  }
+
+  function clearFilters() {
+      document.getElementById('startDateFilter').value = '';
+      document.getElementById('endDateFilter').value = '';
+      loadSales(); // Carrega vendas sem filtros
+  }
+
+  async function deleteSale(saleId) {
+      if (confirm('Tem certeza que deseja excluir esta venda?')) {
+          try {
+              const response = await fetch(`/sales/delete/${saleId}`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+              });
+              const data = await response.json();
+              if (data.success) {
+                  alert(data.message);
+                  loadSales(
+                    document.getElementById('startDateFilter').value,
+                    document.getElementById('endDateFilter').value
+                  ); // Recarregar a lista de vendas com os filtros atuais
+              } else {
+                  alert('Erro ao excluir venda: ' + data.error);
+              }
+          } catch (error) {
+              console.error('Erro ao deletar venda:', error);
+              alert('Erro ao excluir venda. Tente novamente.');
+          }
+      }
+  }
+
+  // Carregar vendas quando o DOM estiver pronto
+  document.addEventListener('DOMContentLoaded', loadSales);
+  </script>
+</body>
+</html>
